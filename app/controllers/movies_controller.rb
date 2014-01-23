@@ -21,12 +21,19 @@ class MoviesController < ApplicationController
 
   def search
 
-
-
   end
 
   def results
 
+    search_str = params[:movie]
+# binding.pry
+    result = Typhoeus.get("http://www.omdbapi.com/", :params => {:s => search_str})
+    movies = JSON.parse(result.body)
+
+    @movies =[]
+    movies["Search"].each { |mov| @movies << [mov["Title"],mov["Year"],mov["imdbID"]] }
+    @movies.sort!{|x,y| y[1] <=> x[1]}
+ 
 
   end
 
@@ -46,24 +53,11 @@ class MoviesController < ApplicationController
 # binding.pry
   end
 
-  #route: # POST   /movies(.:format)
-  # def create
-  #   # create new movie object from params
-  #   movie = params.require(:movie).permit(:title, :year)
-  #   movie["imdbID"] = rand(10000..100000000).to_s
-  #   # add object to movie db
-  #   @@movie_db << movie
-  #   # show movie page
-  #   # render :index
-  #   redirect_to action: :index
-  # end
 
   def create
     movie = params.require(:movie).permit(:title, :year)
     movie["imdbID"] = rand(10000..100000000).to_s
     new_movie = Movie.create(movie)
-    # movie["imdbID"] = new_movie.id
-    # @@movie_db << movie
     redirect_to action: :index
   end
 
@@ -76,10 +70,6 @@ class MoviesController < ApplicationController
     updated_movie = params.require(:movie).permit(:title, :year)
     movie.update_attributes(updated_movie)
     redirect_to "/movies/#{movie.imdbID}"
-    #implement
-    # update object in movies_db
-    # render :show
-    # render will stay within the same request - render will just show you a view in the same request
   end
 
   # route: DELETE /movies/:id(.:format)
@@ -90,6 +80,17 @@ class MoviesController < ApplicationController
     monster.destroy
     redirect_to action: :index
   end
+
+  def add_movies
+    binding.pry
+    params[:imdbID]
+    binding.pry
+    # movie = params.require(:movie).permit(:title, :year, :imdbID)
+    # new_movie = Movie.create(movie)
+    # redirect_to action: :index
+
+  end
+
 
     #implement
     # delete movie from movies_db

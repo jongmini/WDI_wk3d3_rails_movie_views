@@ -6,6 +6,8 @@ Movies::Application.routes.draw do
 
   post '/results' => 'movies#results'
 
+  post '/add_movies' => 'movies#add_movies'
+
 
   # get 'movies'  => 'movies#index', as: :movies
   # post 'movies' => 'movies#create'
