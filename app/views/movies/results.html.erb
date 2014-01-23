@@ -5,8 +5,10 @@
 <form accept-charset="UTF-8" action="/add_movies" method="post">
 <ul class="list-unstyled">
 <input name="post" type="hidden" value="0" />
-<% @movies.map do |movie| %>
-<li><input checked="checked" type="checkbox" id="post_validated" name="imdbID[]" value="<%= movie %>" /> <%= movie[0] %> (<%= movie[1] %>) </li>
+<% @movie_list.map do |movie| %>
+
+<!-- checkboxes passes the imdbID of selected movies in the params imdbID[] -->
+<li><input checked="checked" type="checkbox" id="post_validated" name="imdbID[]" value="<%= movie[2] %>" /> <%= movie[0] %> (<%= movie[1] %>) </li>
 <% end %>
 <input name="commit" type="submit" value="Add to Database" />
 </ul>

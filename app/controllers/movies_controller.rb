@@ -26,16 +26,18 @@ class MoviesController < ApplicationController
   def results
 
     search_str = params[:movie]
-# binding.pry
+
     result = Typhoeus.get("http://www.omdbapi.com/", :params => {:s => search_str})
     movies = JSON.parse(result.body)
+    # setting the class variable to use for matching
+    @@result_movies = movies["Search"]
 
-    @movies =[]
-    movies["Search"].each { |mov| @movies << [mov["Title"],mov["Year"],mov["imdbID"]] }
-    @movies.sort!{|x,y| y[1] <=> x[1]}
- 
+    @movie_list =[]
+    movies["Search"].each { |mov| @movie_list << [mov["Title"],mov["Year"],mov["imdbID"]] }
+    @movie_list.sort!{|x,y| y[1] <=> x[1]} 
 
   end
+
 
 
   # route: # GET    /movies/:id(.:format)
@@ -54,10 +56,11 @@ class MoviesController < ApplicationController
   end
 
 
-  def create
+  def create # I wanted to connect create to search on omdbapi but ran out of time. 
     movie = params.require(:movie).permit(:title, :year)
     movie["imdbID"] = rand(10000..100000000).to_s
     new_movie = Movie.create(movie)
+    binding.pry
     redirect_to action: :index
   end
 
@@ -66,7 +69,7 @@ class MoviesController < ApplicationController
     id = params[:id]
 
     movie = Movie.find_by imdbID: id
-# binding.pry
+
     updated_movie = params.require(:movie).permit(:title, :year)
     movie.update_attributes(updated_movie)
     redirect_to "/movies/#{movie.imdbID}"
@@ -81,23 +84,29 @@ class MoviesController < ApplicationController
     redirect_to action: :index
   end
 
+  
+
   def add_movies
-    binding.pry
-    params[:imdbID]
-    binding.pry
-    # movie = params.require(:movie).permit(:title, :year, :imdbID)
-    # new_movie = Movie.create(movie)
-    # redirect_to action: :index
+    @movie_selected = []
+    movies = params[:imdbID]
+
+    movies.each do |movID|
+      # match the chosen movie imdbIDs with the original results
+      if @@result_movies.map do |mov| 
+        if mov["imdbID"].include?(movID)
+
+        Movie.create({"title" => mov["Title"], "year" => mov["Year"], "imdbID" => mov["imdbID"]})
+
+        @movie_selected << (Movie.find_by imdbID: movID)
+        end
+      end
+      end
+    end
+    
+    render :added
 
   end
-
-
-    #implement
-    # delete movie from movies_db
-    # redirect_to :index
-    # redirect will take you back to the browser to create a second request for the server
-    # redirect will refresh your database
-  
+ 
 
   private  # private methods called from create and show
 

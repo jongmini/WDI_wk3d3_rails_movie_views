@@ -1,0 +1,9 @@
+
+<div class="container">
+<h2> Movies added to your database </h2>
+<% @movie_selected.map do |mov| %>
+<li><%= mov[:title] %> (<%= mov[:year] %>)</li>
+<% end %>
+
+</div>
+
