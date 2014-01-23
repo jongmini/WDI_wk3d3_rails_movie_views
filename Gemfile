@@ -10,6 +10,11 @@ gem 'pry', :group => :development
 
 gem 'typhoeus'
 
+gem 'bootstrap-sass'
+group :development do
+  gem 'rails_layout'
+end
+
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.0'
 

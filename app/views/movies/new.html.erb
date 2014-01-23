@@ -2,8 +2,9 @@
 <form action="/movies" method="post">
     Title: <input name='movie[title]' type="text" /><br>
     Year: <input name='movie[year]' type="text" /><br>
+    <%= token_tag form_authenticity_token %>
     <input name="commit" type="submit" value="Create" />
-  </form>
+</form>
 
-  <h2>Add another movie</h2>
-<%= render  partial: "form_new" %>
+  <!-- <h2>Add another movie</h2> -->
+<%#= render  partial: "form_new" %>

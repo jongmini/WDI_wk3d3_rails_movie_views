@@ -1,8 +1,11 @@
 Movies::Application.routes.draw do
   
-  resources :movies, :actors
+  resources :movies
 
-  root 'movies#index'
+  root 'movies#search', as: :search
+
+  post '/results' => 'movies#results'
+
 
   # get 'movies'  => 'movies#index', as: :movies
   # post 'movies' => 'movies#create'
